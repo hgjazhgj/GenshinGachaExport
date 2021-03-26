@@ -5,13 +5,15 @@ import urllib.parse
 import requests
 
 URL_GACHATYPE = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getConfigList"
-URL_GACHALOG  = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
+URL_GACHALOG = "https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog"
+
 
 def getGachaLogs(gachaTypeId, query):
     def gen():
-        page=1
-        end_id="0"
+        page = 1
+        end_id = "0"
         while True:
+            print(f"fetching gachaType {gachaTypeId} page {page}")
             data = requests.get(URL_GACHALOG + "?" + urllib.parse.urlencode(dict(query, **{
                 "size": "20",
                 "gacha_type": gachaTypeId,
@@ -28,20 +30,24 @@ def getGachaLogs(gachaTypeId, query):
                 "rank": int(record["rank_type"]),
             }for record in data)
             page += 1
-            end_id=data[-1]["id"]
+            end_id = data[-1]["id"]
     return list(gen())
+
 
 def capture():
     with open(os.path.join(os.environ["USERPROFILE"], "AppData", "LocalLow", "miHoYo", "原神", "output_log.txt"), "r") as f:
-        query = dict(urllib.parse.parse_qsl(urllib.parse.urlparse(re.search("OnGetWebViewPageFinish:.*(\\?.*#/log)", f.read()).group(1)).query))
+        query = dict(urllib.parse.parse_qsl(urllib.parse.urlparse(
+            re.search("OnGetWebViewPageFinish:.*(\\?.*#/log)", f.read()).group(1)).query))
     return {j: getGachaLogs(i, query)
-            for i,j in(
-                (i["key"],i["name"])
+            for i, j in (
+                (i["key"], i["name"])
                 for i in
-                    requests.get(URL_GACHATYPE + "?" + urllib.parse.urlencode(dict(query, lang="zh-cn")))
-                    .json()["data"]["gacha_type_list"]
-            )
-           }
+        requests.get(URL_GACHATYPE + "?" +
+                     urllib.parse.urlencode(dict(query, lang="zh-cn")))
+        .json()["data"]["gacha_type_list"]
+    )
+    }
+
 
 if __name__ == "__main__":
     import argparse

@@ -1,20 +1,27 @@
 import json
 
+
 def merge(captureData, localData):
     gachaData = {}
-    for gachaType in captureData:
-        gachaTypeData = captureData[gachaType]
+    accept = False
+    for gachaType in set(gachaData) | set(localData):
         try:
-            gachaTypeData += localData[gachaType][localData[gachaType].index(gachaTypeData[-1])+1:]
-        except IndexError:
-            gachaTypeData = localData[gachaType]
-        except ValueError:
-            assert not localData[gachaType]
-        except KeyError:
-            pass
-        gachaData[gachaType]=gachaTypeData
+            captureTypeData = captureData.get(gachaType, [])
+            localTypeData = localData.get(gachaType, [])
+            mergeTypeData = captureTypeData + localTypeData[len(
+                localTypeData) - localTypeData[::-1].index(captureTypeData[-1]):]
+        except(IndexError, ValueError):
+            print(f"merge {gachaType} failed in {len(captureTypeData)} and {len(localTypeData)} record(s)")
+            mergeTypeData = captureTypeData + localTypeData
+        else:
+            print(f"add {len(mergeTypeData)-len(localTypeData)} record(s) to {gachaType}")
+            accept = True
+        finally:
+            gachaData[gachaType] = mergeTypeData
+    assert accept
     return gachaData
-    
+
+
 if __name__ == "__main__":
     import argparse
     parser = argparse.ArgumentParser()

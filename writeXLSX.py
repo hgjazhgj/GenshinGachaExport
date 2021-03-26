@@ -1,10 +1,13 @@
 import json
 import xlsxwriter
 
+
 def writeXLSX(gachaData, filename):
     workbook = xlsxwriter.Workbook(filename)
-    content_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf","bg_color": "#ebebeb", "border": 1})
-    title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "color": "#757575", "bg_color": "#dbd7d3", "border_color": "#c4c2bf", "border": 1, "bold": True})
+    content_css = workbook.add_format(
+        {"align": "left", "font_name": "微软雅黑", "border_color": "#c4c2bf", "bg_color": "#ebebeb", "border": 1})
+    title_css = workbook.add_format({"align": "left", "font_name": "微软雅黑", "color": "#757575",
+                                     "bg_color": "#dbd7d3", "border_color": "#c4c2bf", "border": 1, "bold": True})
     star_5 = workbook.add_format({"color": "#bd6932", "bold": True})
     star_4 = workbook.add_format({"color": "#a256e1", "bold": True})
     star_3 = workbook.add_format({"color": "#8e8e8e"})
@@ -20,20 +23,26 @@ def writeXLSX(gachaData, filename):
         worksheet.freeze_panes(1, 0)
         idx = 0
         pdx = 0
-        i=2
+        i = 2
         for gacha in gachaDictList:
             idx = idx + 1
             pdx = pdx + 1
-            excel_data = [gacha["time"], gacha["name"], gacha["type"], gacha["rank"], idx, pdx]
+            excel_data = [gacha["time"], gacha["name"],
+                          gacha["type"], gacha["rank"], idx, pdx]
             for j in range(len(excel_col)):
-                worksheet.write(f"{excel_col[j]}{i}", excel_data[j], content_css)
+                worksheet.write(
+                    f"{excel_col[j]}{i}", excel_data[j], content_css)
             if excel_data[3] == 5:
                 pdx = 0
-            i+=1
-        worksheet.conditional_format(f"A2:F{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=5", "format": star_5})
-        worksheet.conditional_format(f"A2:F{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=4", "format": star_4})
-        worksheet.conditional_format(f"A2:F{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=3", "format": star_3})
+            i += 1
+        worksheet.conditional_format(
+            f"A2:F{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=5", "format": star_5})
+        worksheet.conditional_format(
+            f"A2:F{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=4", "format": star_4})
+        worksheet.conditional_format(
+            f"A2:F{len(gachaDictList)+1}", {"type": "formula", "criteria": "=$D2=3", "format": star_3})
     workbook.close()
+
 
 if __name__ == "__main__":
     import argparse

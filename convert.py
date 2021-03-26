@@ -1,12 +1,13 @@
 import json
 
+
 def convert(olddata):
     gachatype = {
-        i["key"]:i["name"]
+        i["key"]: i["name"]
         for i in olddata["gachaType"]
     }
     return {
-        gachatype[i]:[
+        gachatype[i]: [
             {
                 "time": k["time"],
                 "name": k["name"],
@@ -15,8 +16,9 @@ def convert(olddata):
             }
             for k in j
         ]
-        for i,j in olddata["gachaLog"].items()
+        for i, j in olddata["gachaLog"].items()
     }
+
 
 if __name__ == "__main__":
     import argparse

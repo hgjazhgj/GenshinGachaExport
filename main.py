@@ -14,7 +14,7 @@ if args.m:
         localdata = json.load(f)
 else:
     localdata = []
-gachadata = merge(capture(),localdata)
+gachadata = merge(capture(), localdata)
 with open(args.o, "w", encoding="utf-8") as f:
     json.dump(gachadata, f, ensure_ascii=False, sort_keys=False, indent=4)
 writeXLSX(gachadata, args.e)
